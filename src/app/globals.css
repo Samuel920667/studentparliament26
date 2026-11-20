@@ -135,10 +135,12 @@
   font-display: swap;
 }
 .sdp-document { font-family: "Source Serif 4", Georgia, serif; }
-.sdp-dialog {
-  position: fixed; inset: 0; width: 100%; height: 100dvh;
-  max-width: none; max-height: none; margin: 0; padding: 0;
-  border: 0; background: transparent;
+@layer components {
+  .sdp-dialog {
+    position: fixed; inset: 0; width: 100%; height: 100dvh;
+    max-width: none; max-height: none; margin: 0; padding: 0;
+    border: 0; background: transparent;
+  }
 }
 .sdp-dialog:not([open]) { display: none; }
 .sdp-dialog::backdrop { background: transparent; }

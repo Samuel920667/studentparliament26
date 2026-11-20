@@ -45,11 +45,11 @@ function InstagramIcon({ size = 20 }: { size?: number }) {
 function BrandLogos({
   veritasLogoSrc,
   logoSrc,
-  priority = false,
+  preload = false,
 }: {
   veritasLogoSrc?: string;
   logoSrc?: string;
-  priority?: boolean;
+  preload?: boolean;
 }) {
   return (
     <div className="inline-flex items-center gap-3.5 sm:gap-4">
@@ -68,7 +68,9 @@ function BrandLogos({
             alt="Veritas University Abuja Logo"
             fill
             sizes="(max-width: 640px) 56px, 64px"
-            priority={priority}
+            preload={preload}
+            loading={preload ? undefined : "eager"}
+            decoding="sync"
             className="object-contain"
           />
         ) : (
@@ -94,7 +96,9 @@ function BrandLogos({
             alt="Student Delegatory Parliament Logo"
             fill
             sizes="(max-width: 640px) 56px, 64px"
-            priority={priority}
+            preload={preload}
+            loading={preload ? undefined : "eager"}
+            decoding="sync"
             className="object-contain"
           />
         ) : (
@@ -134,7 +138,7 @@ export function Navbar({ veritasLogoSrc, logoSrc }: NavbarProps) {
             <BrandLogos
               veritasLogoSrc={veritasLogoSrc}
               logoSrc={logoSrc}
-              priority
+              preload
             />
           </Link>
 
