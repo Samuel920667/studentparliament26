@@ -1,26 +1,166 @@
+/* src/app/globals.css */
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --navy: #102A43;
+  --navy-deep: #0B1F33;
+  --navy-grid-dark: #163656;
+  --navy-doodle-dark: #3B648E;
+  --blue: #2563EB;
+  --blue-hover: #1D4ED8;
+  --background: #F5F5F0;
+  --grid: #D6DDE4;
+  --white: #FFFFFF;
+  --foreground: #111827;
+  --muted: #4B5563;
+
+  --border-width: 1.5px;
+  --radius: 2px;
+  --grid-size: 28px;
+
+  --shadow-hard-sm: 2px 2px 0px 0px #111827;
+  --shadow-hard-md: 4px 4px 0px 0px #111827;
+  --shadow-hard-light: 4px 4px 0px 0px #2563EB;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-navy: var(--navy);
+  --color-navy-deep: var(--navy-deep);
+  --color-electric: var(--blue);
+  --color-offwhite: var(--background);
+  --color-grid: var(--grid);
+  --color-surface: var(--white);
+  --color-ink: var(--foreground);
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-ibm-plex-mono), ui-monospace, SFMono-Regular, monospace;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  html {
+    background-color: var(--background);
+    color: var(--foreground);
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    letter-spacing: -0.025em;
+  }
+
+  ::selection {
+    background-color: var(--blue);
+    color: var(--white);
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Architectural Grid Layers */
+.sdp-grid-light {
+  background-image:
+    linear-gradient(to right, var(--grid) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid) 1px, transparent 1px);
+  background-size: var(--grid-size) var(--grid-size);
+  background-position: -1px -1px;
+}
+
+.sdp-grid-dark {
+  background-image:
+    linear-gradient(to right, var(--navy-grid-dark) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--navy-grid-dark) 1px, transparent 1px);
+  background-size: var(--grid-size) var(--grid-size);
+  background-position: -1px -1px;
+}
+
+/* Surfaces & Borders */
+.sdp-border {
+  border-width: var(--border-width);
+  border-style: solid;
+  border-color: var(--foreground);
+  border-radius: var(--radius);
+}
+
+.sdp-card {
+  background-color: var(--white);
+  border: var(--border-width) solid var(--foreground);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-hard-md);
+}
+
+.sdp-shadow-sm {
+  box-shadow: var(--shadow-hard-sm);
+}
+
+.sdp-shadow-md {
+  box-shadow: var(--shadow-hard-md);
+}
+
+.sdp-shadow-accent {
+  box-shadow: var(--shadow-hard-light);
+}
+
+/* Editorial Monospace Eyebrow Label */
+.sdp-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+
+@font-face {
+  font-family: "Source Serif 4";
+  src: url("/fonts/SourceSerif4-Regular.otf") format("opentype");
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Source Serif 4";
+  src: url("/fonts/SourceSerif4-Bold.otf") format("opentype");
+  font-weight: 700;
+  font-display: swap;
+}
+.sdp-document { font-family: "Source Serif 4", Georgia, serif; }
+.sdp-dialog {
+  position: fixed; inset: 0; width: 100%; height: 100dvh;
+  max-width: none; max-height: none; margin: 0; padding: 0;
+  border: 0; background: transparent;
+}
+.sdp-dialog:not([open]) { display: none; }
+.sdp-dialog::backdrop { background: transparent; }
+#petition-print-root { display: none; }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+@media print {
+  @page { size: A4 portrait; margin: 20mm; }
+  body.sdp-printing { display: block; min-height: 0; background: white; color: black; overflow: visible; }
+  body.sdp-printing > *:not(#petition-print-root) { display: none !important; }
+  body.sdp-printing #petition-print-root { display: block; }
+  .sdp-printing .sdp-document {
+    position: static; border: 0; box-shadow: none; padding: 0; margin: 0;
+    width: auto; font-size: 12pt; color: black; background: white;
+  }
+  .sdp-printing .sdp-document p { font-size: 12pt; orphans: 3; widows: 3; }
+  .sdp-printing .sdp-keep-next { break-after: avoid; }
 }

@@ -2,24 +2,34 @@
   "name": "sdp-portal",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": "24.x"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint --max-warnings 0",
+    "typecheck": "tsc --noEmit",
+    "test": "playwright test"
   },
   "dependencies": {
+    "@pdf-lib/fontkit": "^1.1.1",
+    "docx": "^9.16.0",
     "next": "16.4.6",
+    "pdf-lib": "^1.17.1",
     "react": "19.3.0",
     "react-dom": "19.3.0"
   },
   "devDependencies": {
+    "@playwright/test": "^1.58.2",
     "@tailwindcss/turbopack": "4.3.3",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.4.6",
+    "jszip": "^3.10.1",
     "tailwindcss": "4.3.3",
     "typescript": "^5"
   }
