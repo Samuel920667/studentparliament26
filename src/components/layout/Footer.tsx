@@ -1,6 +1,7 @@
 // src/components/layout/Footer.tsx
 import Image from "next/image";
 import Link from "next/link";
+import { CookiePreferencesButton } from "@/components/layout/CookieConsent";
 import { NAV_LINKS, SITE_CONFIG, SOCIAL_LINKS } from "@/data/site";
 import { cn } from "@/lib/utils";
 
@@ -122,6 +123,7 @@ export function Footer({
               <span>Study Break: Tic-Tac-Toe</span>
               <span aria-hidden="true">&rarr;</span>
             </Link>
+            <CookiePreferencesButton />
             <p>{SITE_CONFIG.session}</p>
           </div>
         </div>

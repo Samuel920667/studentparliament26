@@ -3,6 +3,7 @@ import type { Metadata, Viewport } from "next";
 import { IBM_Plex_Mono, Inter, Space_Grotesk } from "next/font/google";
 import { Footer } from "@/components/layout/Footer";
 import { Navbar } from "@/components/layout/Navbar";
+import { CookieConsent } from "@/components/layout/CookieConsent";
 import { getSiteUrl } from "@/lib/site-url";
 import "./globals.css";
 
@@ -87,6 +88,7 @@ export default function RootLayout({
         <Navbar veritasLogoSrc={VERITAS_LOGO_SRC} logoSrc={SDP_LOGO_SRC} />
         <main className="flex-1">{children}</main>
         <Footer logoSrc={SDP_LOGO_SRC} />
+        <CookieConsent />
       </body>
     </html>
   );
