@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   ...canonicalMetadata("/game"),
   title: "Tic-Tac-Toe",
   description:
-    "Play Tic-Tac-Toe against an unbeatable Minimax AI or a friend on the SDP Portal.",
+    "Play Tic-Tac-Toe with Casual, Smart, or Unbeatable AI difficulty, or challenge a friend on the SDP Portal.",
 };
 
 export default function GamePage() {
@@ -23,7 +23,7 @@ export default function GamePage() {
             Tic-Tac-Toe <span className="text-[#60A5FA]">Arena</span>
           </h1>
           <p className="mt-2 text-sm text-slate-300">
-            Challenge the Minimax AI or pass and play with a friend.
+            Start with Casual, try Smart or Unbeatable, or play with a friend.
           </p>
         </section>
       </BackgroundPattern>

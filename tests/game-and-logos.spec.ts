@@ -5,6 +5,7 @@ for (const width of [1280, 390]) {
     await page.setViewportSize({ width, height: 900 });
     await page.addInitScript(() => { Math.random = () => 0; });
     await page.goto("/game");
+    await page.getByRole("button", { name: "Unbeatable", exact: true }).click();
     const board = page.getByRole("group", { name: "Tic-Tac-Toe Board" });
     await board.getByRole("button", { name: "Row 1, Column 1: Empty", exact: true }).click();
     await expect(board.getByRole("button", { name: "Row 2, Column 2: O", exact: true })).toBeVisible();

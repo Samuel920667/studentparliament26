@@ -145,6 +145,7 @@ export function getBestAiMove(
   aiMark: PlayerMark,
   difficulty: Difficulty
 ): number | null {
+  if (evaluateBoard(board).winner !== null) return null;
   const available = getAvailableMoves(board);
   if (available.length === 0) return null;
 
@@ -169,24 +170,22 @@ export function getBestAiMove(
     return pickRandom(available);
   }
 
-  // Smart: always takes wins, almost always blocks, contests center/corners
+  // Smart normally spots threats, but occasionally overlooks a move.
   if (difficulty === "smart") {
+    if (Math.random() < 0.2) return pickRandom(available);
     const winNow = findImmediateWinningMove(board, aiMark);
     if (winNow !== null) return winNow;
 
     const blockNow = findImmediateWinningMove(board, humanMark);
     if (blockNow !== null && Math.random() < 0.9) return blockNow;
 
-    // 70% full minimax, 30% positional play so sharp players can trap it
-    if (Math.random() < 0.3) {
-      if (board[4] === null) return 4;
-      const openCorners = [0, 2, 6, 8].filter((i) => board[i] === null);
-      if (openCorners.length > 0) return pickRandom(openCorners);
-      return pickRandom(available);
-    }
+    if (board[4] === null) return 4;
+    const openCorners = [0, 2, 6, 8].filter((i) => board[i] === null);
+    if (openCorners.length > 0) return pickRandom(openCorners);
+    return pickRandom(available);
   }
 
-  // Unbeatable (and Smart minimax branch): depth-scored minimax with alpha-beta pruning
+  // Unbeatable is an opt-in challenge using full minimax.
   const workingBoard = [...board];
   let bestScore = -Infinity;
   let bestMoves: number[] = [];

@@ -90,7 +90,7 @@ function MarkIcon({
 
 export function TicTacToeGame() {
   const [mode, setMode] = useState<GameMode>("ai");
-  const [difficulty, setDifficulty] = useState<Difficulty>("unbeatable");
+  const [difficulty, setDifficulty] = useState<Difficulty>("casual");
   const [humanMark, setHumanMark] = useState<PlayerMark>("X");
   const [board, setBoard] = useState<BoardState>(() => createEmptyBoard());
   const [currentTurn, setCurrentTurn] = useState<PlayerMark>("X");
@@ -309,7 +309,7 @@ export function TicTacToeGame() {
                     key={option.id}
                     type="button"
                     onClick={() => handleDifficultyChange(option.id)}
-                aria-pressed={active}
+                    aria-pressed={active}
                     className={cn(
                       "rounded-[2px] border py-2 font-mono text-[11px] font-semibold tracking-[0.08em] uppercase transition-colors cursor-pointer",
                       active
