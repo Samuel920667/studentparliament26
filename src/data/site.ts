@@ -38,6 +38,7 @@ export const NAV_LINKS: NavItem[] = [
   { label: "Senator Directory", href: "/senators" },
   { label: "Contact Us", href: "/contact" },
   { label: "Leadership", href: "/leadership" },
+  { label: "Leadership Archive", href: "/archive" },
 ];
 
 export const CLERK_OFFICE: {

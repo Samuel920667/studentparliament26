@@ -262,8 +262,7 @@ export function DoodlePattern({
                 <rect x="26" y="34" width="12" height="5" />
                 <path d="M27 39 L29 58 H35 L37 39" />
               </g>
-
-              {/* ==================== SUBTLE MICRO-MARKS ==================== */}
+              
 
               <g transform="translate(132 118) rotate(-12)">
                 <path d="M8 2 C3 2 2 6 6 8 L10 10 C14 12 13 17 8 17" />
