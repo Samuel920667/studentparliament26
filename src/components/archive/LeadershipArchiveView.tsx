@@ -1,7 +1,7 @@
 // src/components/archive/LeadershipArchiveView.tsx
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   getArchiveInitials,
   SDP_ARCHIVE_PRESIDENTS,
@@ -19,21 +19,15 @@ export interface LeadershipArchiveViewProps {
 
 function ArchiveCard({
   president,
-  failedPhoto,
-  failedLogo,
-  onPhotoError,
-  onLogoError,
 }: {
   president: ArchivePresident;
-  failedPhoto: boolean;
-  failedLogo: boolean;
-  onPhotoError: (id: string) => void;
-  onLogoError: (id: string) => void;
 }) {
+  const [failedPhoto, setFailedPhoto] = useState<string>();
+  const [failedLogo, setFailedLogo] = useState<string>();
   const isCurrent = Boolean(president.isCurrent);
-  const showPhoto = Boolean(president.photo) && !failedPhoto;
+  const showPhoto = Boolean(president.photo) && president.photo !== failedPhoto;
   const showLogoSlot = president.arm === "sra" || Boolean(president.logo);
-  const showLogoImage = Boolean(president.logo) && !failedLogo;
+  const showLogoImage = Boolean(president.logo) && president.logo !== failedLogo;
 
   return (
     <article
@@ -89,10 +83,13 @@ function ArchiveCard({
               {showLogoImage && president.logo ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
+                  ref={(image) => {
+                    if (image?.complete && !image.naturalWidth) setFailedLogo(president.logo);
+                  }}
                   src={president.logo}
                   alt={`${president.name} administration logo`}
                   decoding="async"
-                  onError={() => onLogoError(president.id)}
+                  onError={() => setFailedLogo(president.logo)}
                   className="h-full w-full object-contain"
                 />
               ) : (
@@ -123,10 +120,13 @@ function ArchiveCard({
           {showPhoto && president.photo ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img
+              ref={(image) => {
+                if (image?.complete && !image.naturalWidth) setFailedPhoto(president.photo);
+              }}
               src={president.photo}
               alt={`${president.name}, ${president.title}`}
               decoding="async"
-              onError={() => onPhotoError(president.id)}
+              onError={() => setFailedPhoto(president.photo)}
               className="h-full w-full object-cover object-top transition-transform duration-300 group-hover:scale-[1.03]"
             />
           ) : (
@@ -206,27 +206,6 @@ export function LeadershipArchiveView({
   sraPresidents = SRA_ARCHIVE_PRESIDENTS,
 }: LeadershipArchiveViewProps) {
   const [activeFilter, setActiveFilter] = useState<ArchiveFilter>("all");
-  const [failedPhotos, setFailedPhotos] = useState<Record<string, boolean>>({});
-  const [failedLogos, setFailedLogos] = useState<Record<string, boolean>>({});
-
-  useEffect(() => {
-    setFailedPhotos({});
-    setFailedLogos({});
-  }, [sdpPresidents, sraPresidents]);
-
-  const markPhotoFailed = (id: string) => {
-    setFailedPhotos((prev) => ({
-      ...prev,
-      [id]: true,
-    }));
-  };
-
-  const markLogoFailed = (id: string) => {
-    setFailedLogos((prev) => ({
-      ...prev,
-      [id]: true,
-    }));
-  };
 
   const showSdp = activeFilter === "all" || activeFilter === "sdp";
   const showSra = activeFilter === "all" || activeFilter === "sra";
@@ -337,10 +316,6 @@ export function LeadershipArchiveView({
               <ArchiveCard
                 key={president.id}
                 president={president}
-                failedPhoto={Boolean(failedPhotos[president.id])}
-                failedLogo={Boolean(failedLogos[president.id])}
-                onPhotoError={markPhotoFailed}
-                onLogoError={markLogoFailed}
               />
             ))}
           </div>
@@ -374,10 +349,6 @@ export function LeadershipArchiveView({
               <ArchiveCard
                 key={president.id}
                 president={president}
-                failedPhoto={Boolean(failedPhotos[president.id])}
-                failedLogo={Boolean(failedLogos[president.id])}
-                onPhotoError={markPhotoFailed}
-                onLogoError={markLogoFailed}
               />
             ))}
           </div>
