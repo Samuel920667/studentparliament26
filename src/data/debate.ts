@@ -5,7 +5,7 @@ export const DEBATE_EVENT = {
   description:
     "Forget the boring speeches. We're putting the real, unfiltered conversations on the floor, and you're going to want to be in the room for this one.",
   topics: [
-    "Have you heard of oresexuality?",
+    "Have you heard of óresexuality?",
     "The emotional side of student leadership: what nobody talks about.",
     "Is Abortion allowed if it fulfils personal moral integrity?",
     "The hot takes everyone whispers about, finally said out loud.",
