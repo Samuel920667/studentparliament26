@@ -1,7 +1,7 @@
 // src/components/layout/Navbar.tsx
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -113,6 +113,7 @@ function BrandLogos({
 
 export function Navbar({ veritasLogoSrc, logoSrc }: NavbarProps) {
   const pathname = usePathname();
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
   const [menuPath, setMenuPath] = useState<string | null>(null);
   const menuOpen = menuPath === pathname;
   const closeMenu = () => setMenuPath(null);
@@ -126,7 +127,7 @@ export function Navbar({ veritasLogoSrc, logoSrc }: NavbarProps) {
 
   return (
     <>
-      <header className="sticky top-0 z-40 border-b border-white/10 bg-[#0B1F33]/95 backdrop-blur-md">
+      <header className="sticky top-0 z-40 border-b border-white/10 bg-[#0B1F33]/95 pt-[env(safe-area-inset-top,0px)] backdrop-blur-md">
         <div className="mx-auto flex h-20 max-w-6xl items-center justify-between px-6 sm:h-[88px]">
           {/* Left: Veritas University Logo + SDP Logo */}
           <Link
@@ -156,7 +157,11 @@ export function Navbar({ veritasLogoSrc, logoSrc }: NavbarProps) {
 
             <button
               type="button"
-              onClick={() => setMenuPath(pathname)}
+              onClick={(event) => {
+                // Safari does not reliably focus buttons when they are tapped.
+                event.currentTarget.focus({ preventScroll: true });
+                setMenuPath(pathname);
+              }}
               aria-expanded={menuOpen}
               aria-controls="sdp-fullscreen-menu"
               aria-label="Open navigation menu"
@@ -178,10 +183,10 @@ export function Navbar({ veritasLogoSrc, logoSrc }: NavbarProps) {
         </div>
       </header>
 
-      {/* Full-Screen See-Through Deep Navy Glassmorphism Overlay */}
+      {/* Opaque menu surface isolates navigation from the page background. */}
       {menuOpen ? (
-        <Modal id="sdp-fullscreen-menu" label="Site navigation" onClose={closeMenu}>
-          <div className="fixed inset-0 flex flex-col overflow-y-auto bg-[#0B1F33]/60 text-white backdrop-blur-xl backdrop-saturate-150">
+        <Modal id="sdp-fullscreen-menu" label="Site navigation" onClose={closeMenu} initialFocusRef={closeButtonRef} className="sdp-navigation-dialog">
+          <div className="sdp-navigation-insets flex h-full min-h-0 flex-col overflow-hidden bg-[#0B1F33] text-white">
             {/* Overlay Top Bar */}
             <div className="shrink-0 border-b border-white/10">
               <div className="mx-auto flex h-20 max-w-6xl items-center justify-between px-6 sm:h-[88px]">
@@ -189,7 +194,7 @@ export function Navbar({ veritasLogoSrc, logoSrc }: NavbarProps) {
                   href="/"
                   onClick={closeMenu}
                   aria-label="SDP Portal Home"
-                  className="inline-flex items-center"
+                  className="inline-flex items-center focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#60A5FA]"
                 >
                   <BrandLogos
                     veritasLogoSrc={veritasLogoSrc}
@@ -198,6 +203,7 @@ export function Navbar({ veritasLogoSrc, logoSrc }: NavbarProps) {
                 </Link>
 
                 <button
+                  ref={closeButtonRef}
                   type="button"
                   onClick={closeMenu}
                   aria-label="Close navigation menu"
@@ -221,88 +227,90 @@ export function Navbar({ veritasLogoSrc, logoSrc }: NavbarProps) {
             </div>
 
             {/* Clean Full-Screen Navigation List */}
-            <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col justify-center px-6 py-12">
-              <nav
-                aria-label="Full screen navigation"
-                className="mx-auto flex w-full max-w-xl flex-col"
-              >
-                {NAV_LINKS.map((item) => {
-                  const active = isActive(item.href);
+            <div className="min-h-0 flex-1 overflow-y-auto overscroll-y-contain [scroll-padding-block:1.5rem]">
+              <div className="mx-auto flex min-h-full w-full max-w-6xl flex-col px-6 py-4 pb-[calc(1rem+env(safe-area-inset-bottom,0px))] sm:py-8 sm:pb-[calc(2rem+env(safe-area-inset-bottom,0px))]">
+                <nav
+                  aria-label="Full screen navigation"
+                  className="mx-auto my-auto flex w-full max-w-xl flex-col"
+                >
+                  {NAV_LINKS.map((item) => {
+                    const active = isActive(item.href);
 
-                  return (
+                    return (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        onClick={closeMenu}
+                        aria-current={active ? "page" : undefined}
+                        className={cn(
+                          "group flex min-h-14 items-center justify-between gap-3 border-b border-white/12 py-3 transition-colors duration-150 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white sm:py-4 md:py-5",
+                          active
+                            ? "text-[#60A5FA]"
+                            : "text-white/90 hover:text-white"
+                        )}
+                      >
+                        <span className="min-w-0 font-display text-2xl font-semibold tracking-tight sm:text-4xl">
+                          {item.label}
+                        </span>
+
+                        <svg
+                          aria-hidden="true"
+                          width="20"
+                          height="20"
+                          viewBox="0 0 16 16"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="1.75"
+                          strokeLinecap="square"
+                          className={cn(
+                            "shrink-0 transition-transform duration-150 group-hover:translate-x-1 group-hover:-translate-y-1",
+                            active
+                              ? "text-[#60A5FA]"
+                              : "text-white/40 group-hover:text-white"
+                          )}
+                        >
+                          <path d="M4.5 11.5L11.5 4.5" />
+                          <path d="M5.5 4.5H11.5V10.5" />
+                        </svg>
+                      </Link>
+                    );
+                  })}
+
+                  <div className="space-y-3 pt-5 sm:space-y-4 sm:pt-8">
                     <Link
-                      key={item.href}
-                      href={item.href}
+                      href="/petitions"
                       onClick={closeMenu}
-                      aria-current={active ? "page" : undefined}
-                      className={cn(
-                        "group flex items-center justify-between border-b border-white/12 py-6 transition-colors duration-150",
-                        active
-                          ? "text-[#60A5FA]"
-                          : "text-white/90 hover:text-white"
-                      )}
+                      className="inline-flex w-full items-center justify-center gap-2.5 rounded-[2px] bg-[#2563EB] px-6 py-4 font-display text-sm font-semibold tracking-wider text-white uppercase transition-colors duration-150 hover:bg-[#1D4ED8] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
                     >
-                      <span className="font-display text-3xl font-semibold tracking-tight sm:text-4xl">
-                        {item.label}
-                      </span>
-
+                      <span>Draft a Petition</span>
                       <svg
                         aria-hidden="true"
-                        width="20"
-                        height="20"
+                        width="16"
+                        height="16"
                         viewBox="0 0 16 16"
                         fill="none"
                         stroke="currentColor"
-                        strokeWidth="1.75"
+                        strokeWidth="2"
                         strokeLinecap="square"
-                        className={cn(
-                          "transition-transform duration-150 group-hover:translate-x-1 group-hover:-translate-y-1",
-                          active
-                            ? "text-[#60A5FA]"
-                            : "text-white/40 group-hover:text-white"
-                        )}
                       >
-                        <path d="M4.5 11.5L11.5 4.5" />
-                        <path d="M5.5 4.5H11.5V10.5" />
+                        <path d="M3 8H13" />
+                        <path d="M8.5 3.5L13 8L8.5 12.5" />
                       </svg>
                     </Link>
-                  );
-                })}
 
-                <div className="space-y-4 pt-8">
-                  <Link
-                    href="/petitions"
-                    onClick={closeMenu}
-                    className="inline-flex w-full items-center justify-center gap-2.5 rounded-[2px] bg-[#2563EB] px-6 py-4 font-display text-sm font-semibold tracking-wider text-white uppercase transition-colors duration-150 hover:bg-[#1D4ED8] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
-                  >
-                    <span>Draft a Petition</span>
-                    <svg
-                      aria-hidden="true"
-                      width="16"
-                      height="16"
-                      viewBox="0 0 16 16"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="square"
+                    <a
+                      href={SOCIAL_LINKS.instagram.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={closeMenu}
+                      className="inline-flex min-h-11 w-full items-center justify-center gap-2.5 py-2 font-mono text-xs font-semibold tracking-[0.12em] text-slate-200 uppercase transition-colors duration-150 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
                     >
-                      <path d="M3 8H13" />
-                      <path d="M8.5 3.5L13 8L8.5 12.5" />
-                    </svg>
-                  </Link>
-
-                  <a
-                    href={SOCIAL_LINKS.instagram.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={closeMenu}
-                    className="inline-flex w-full items-center justify-center gap-2.5 py-2 font-mono text-xs font-semibold tracking-[0.12em] text-slate-200 uppercase transition-colors duration-150 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
-                  >
-                    <InstagramIcon size={17} />
-                    <span>Follow on {SOCIAL_LINKS.instagram.label}</span>
-                  </a>
-                </div>
-              </nav>
+                      <InstagramIcon size={17} />
+                      <span>Follow on {SOCIAL_LINKS.instagram.label}</span>
+                    </a>
+                  </div>
+                </nav>
+              </div>
             </div>
           </div>
         </Modal>

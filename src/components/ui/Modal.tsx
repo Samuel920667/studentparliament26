@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, type ReactNode } from "react";
+import { useEffect, useRef, type ReactNode, type RefObject } from "react";
 import { cn } from "@/lib/utils";
 
 let locks = 0;
@@ -13,10 +13,11 @@ type ModalProps = {
   labelledBy?: string;
   className?: string;
   id?: string;
+  initialFocusRef?: RefObject<HTMLElement | null>;
 };
 
 /** Native top-layer dialogs provide focus trapping and an inert background. */
-export function Modal({ children, onClose, label, labelledBy, className, id }: ModalProps) {
+export function Modal({ children, onClose, label, labelledBy, className, id, initialFocusRef }: ModalProps) {
   const ref = useRef<HTMLDialogElement>(null);
   useEffect(() => {
     const dialog = ref.current!;
@@ -26,6 +27,7 @@ export function Modal({ children, onClose, label, labelledBy, className, id }: M
       document.body.style.overflow = "hidden";
     }
     dialog.showModal();
+    initialFocusRef?.current?.focus({ preventScroll: true });
     return () => {
       dialog.close();
       if (!--locks) document.body.style.overflow = originalOverflow;
@@ -33,7 +35,7 @@ export function Modal({ children, onClose, label, labelledBy, className, id }: M
         previousFocus.focus({ preventScroll: true });
       }
     };
-  }, []);
+  }, [initialFocusRef]);
   return (
     <dialog
       ref={ref}
@@ -46,16 +48,14 @@ export function Modal({ children, onClose, label, labelledBy, className, id }: M
         const controls = [...event.currentTarget.querySelectorAll<HTMLElement>(
           "button, [href], input, select, textarea, [tabindex]"
         )].filter((element) => element.tabIndex >= 0 && !element.matches(":disabled") && element.getClientRects().length);
-        const first = controls[0];
-        const last = controls[controls.length - 1];
-        if (!first) return;
-        if (event.shiftKey && (document.activeElement === first || document.activeElement === event.currentTarget)) {
-          event.preventDefault();
-          last.focus();
-        } else if (!event.shiftKey && document.activeElement === last) {
-          event.preventDefault();
-          first.focus();
-        }
+        if (!controls.length) return;
+        // Include links even when Safari's default Tab traversal skips them.
+        const index = controls.indexOf(document.activeElement as HTMLElement);
+        const next = index < 0
+          ? (event.shiftKey ? controls.length - 1 : 0)
+          : (index + (event.shiftKey ? -1 : 1) + controls.length) % controls.length;
+        event.preventDefault();
+        controls[next].focus();
       }}
       onCancel={(event) => { event.preventDefault(); onClose(); }}
       onClick={(event) => { if (event.target === event.currentTarget) onClose(); }}
