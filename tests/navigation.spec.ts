@@ -1,5 +1,26 @@
 import { test, expect } from "@playwright/test";
 
+test("mobile logos are ready on a cold visit even when image downloads are unavailable", async ({ page }, testInfo) => {
+  await page.setViewportSize({ width: 390, height: 664 });
+  await page.route("**/*", route => route.request().resourceType() === "image" ? route.abort() : route.continue());
+  await page.goto("/", { waitUntil: "domcontentloaded" });
+  const headerLogos = page.locator("header img");
+  const readyOnNextFrame = (logos: import("@playwright/test").Locator) => logos.evaluateAll(nodes => new Promise<boolean>(resolve => {
+    requestAnimationFrame(() => resolve(nodes.length === 2 && nodes.every(node => {
+      const image = node as HTMLImageElement;
+      return image.complete && image.naturalWidth > 0;
+    })));
+  }));
+  expect(await readyOnNextFrame(headerLogos)).toBe(true);
+  for (let opening = 0; opening < 2; opening++) {
+    await page.getByRole("button", { name: "Open navigation menu" }).click();
+    const dialog = page.getByRole("dialog", { name: "Site navigation" });
+    expect(await readyOnNextFrame(dialog.locator("img"))).toBe(true);
+    if (!opening) await page.screenshot({ path: testInfo.outputPath("mobile-logos.png") });
+    await dialog.getByRole("button", { name: "Close navigation menu" }).click();
+  }
+});
+
 for (const viewport of [
   { width: 320, height: 568 },
   { width: 390, height: 664 },

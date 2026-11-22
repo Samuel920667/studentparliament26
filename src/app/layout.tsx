@@ -4,6 +4,7 @@ import { IBM_Plex_Mono, Inter, Space_Grotesk } from "next/font/google";
 import { Footer } from "@/components/layout/Footer";
 import { Navbar } from "@/components/layout/Navbar";
 import { CookieConsent } from "@/components/layout/CookieConsent";
+import brandLogos from "@/data/brand-logos.json";
 import { getSiteUrl } from "@/lib/site-url";
 import "./globals.css";
 
@@ -29,11 +30,11 @@ const ibmPlexMono = IBM_Plex_Mono({
 });
 
 /**
- * Drop both logos inside /public and update the filenames below.
- * Example: "/veritas-logo.png" and "/sdp-logo.png".
+ * Embed small copies of the public logos to avoid a separate image download.
+ * Run npm run generate:logos after updating the original PNGs in /public.
  */
-const VERITAS_LOGO_SRC: string | undefined = "/veritas-logo.png";
-const SDP_LOGO_SRC: string | undefined = "/sdp-logo.png";
+const VERITAS_LOGO_SRC = brandLogos.veritas;
+const SDP_LOGO_SRC = brandLogos.sdp;
 const siteUrl = getSiteUrl();
 
 export const metadata: Metadata = {

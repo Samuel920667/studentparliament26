@@ -11,12 +11,12 @@ import { Modal } from "@/components/ui/Modal";
 
 export interface NavbarProps {
   /**
-   * Path to the Veritas University logo inside /public (e.g. "/veritas-logo.png").
+   * Path or data URL for the Veritas University logo.
    * Leave undefined to display the minimal VUA logo placeholder.
    */
   veritasLogoSrc?: string;
   /**
-   * Path to the SDP logo inside /public (e.g. "/sdp-logo.png").
+   * Path or data URL for the SDP logo.
    * Leave undefined to display the minimal SDP logo placeholder.
    */
   logoSrc?: string;
@@ -45,11 +45,9 @@ function InstagramIcon({ size = 20 }: { size?: number }) {
 function BrandLogos({
   veritasLogoSrc,
   logoSrc,
-  preload = false,
 }: {
   veritasLogoSrc?: string;
   logoSrc?: string;
-  preload?: boolean;
 }) {
   return (
     <div className="inline-flex items-center gap-3.5 sm:gap-4">
@@ -68,8 +66,7 @@ function BrandLogos({
             alt="Veritas University Abuja Logo"
             fill
             sizes="(max-width: 640px) 56px, 64px"
-            preload={preload}
-            loading={preload ? undefined : "eager"}
+            loading="eager"
             decoding="sync"
             className="object-contain"
           />
@@ -96,8 +93,7 @@ function BrandLogos({
             alt="Student Delegatory Parliament Logo"
             fill
             sizes="(max-width: 640px) 56px, 64px"
-            preload={preload}
-            loading={preload ? undefined : "eager"}
+            loading="eager"
             decoding="sync"
             className="object-contain"
           />
@@ -139,7 +135,6 @@ export function Navbar({ veritasLogoSrc, logoSrc }: NavbarProps) {
             <BrandLogos
               veritasLogoSrc={veritasLogoSrc}
               logoSrc={logoSrc}
-              preload
             />
           </Link>
 
