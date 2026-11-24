@@ -50,11 +50,11 @@ function BrandLogos({
   logoSrc?: string;
 }) {
   return (
-    <div className="inline-flex items-center gap-3.5 sm:gap-4">
+    <div className="inline-flex items-center gap-3 sm:gap-4">
       {/* Veritas University Logo */}
       <div
         className={cn(
-          "relative flex h-14 w-14 items-center justify-center overflow-hidden rounded-[2px] transition-opacity duration-150 hover:opacity-90 sm:h-16 sm:w-16",
+          "relative flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-[2px] transition-opacity duration-150 hover:opacity-90 sm:h-16 sm:w-16",
           veritasLogoSrc
             ? "bg-transparent"
             : "border border-white/20 bg-white/5"
@@ -65,7 +65,7 @@ function BrandLogos({
             src={veritasLogoSrc}
             alt="Veritas University Abuja Logo"
             fill
-            sizes="(max-width: 640px) 56px, 64px"
+            sizes="(max-width: 639px) 32px, 64px"
             loading="eager"
             decoding="sync"
             className="object-contain"
@@ -78,12 +78,12 @@ function BrandLogos({
       </div>
 
       {/* Subtle Divider */}
-      <span aria-hidden="true" className="h-9 w-px bg-white/15 sm:h-10" />
+      <span aria-hidden="true" className="h-6 w-px bg-white/15 sm:h-10" />
 
       {/* SDP Logo */}
       <div
         className={cn(
-          "relative flex h-14 w-14 items-center justify-center overflow-hidden rounded-[2px] transition-opacity duration-150 hover:opacity-90 sm:h-16 sm:w-16",
+          "relative flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-[2px] transition-opacity duration-150 hover:opacity-90 sm:h-16 sm:w-16",
           logoSrc ? "bg-transparent" : "border border-white/20 bg-white/5"
         )}
       >
@@ -92,7 +92,7 @@ function BrandLogos({
             src={logoSrc}
             alt="Student Delegatory Parliament Logo"
             fill
-            sizes="(max-width: 640px) 56px, 64px"
+            sizes="(max-width: 639px) 32px, 64px"
             loading="eager"
             decoding="sync"
             className="object-contain"
@@ -123,14 +123,14 @@ export function Navbar({ veritasLogoSrc, logoSrc }: NavbarProps) {
 
   return (
     <>
-      <header className="sticky top-0 z-40 border-b border-white/10 bg-[#0B1F33]/95 pt-[env(safe-area-inset-top,0px)] backdrop-blur-md">
-        <div className="mx-auto flex h-20 max-w-6xl items-center justify-between px-6 sm:h-[88px]">
+      <header className="sticky top-0 z-40 border-b border-white/10 bg-[#0B1F33] pt-[env(safe-area-inset-top,0px)] sm:bg-[#0B1F33]/95 sm:backdrop-blur-md">
+        <div className="sdp-header-row mx-auto flex max-w-6xl items-center justify-between px-4 sm:h-[88px] sm:px-6">
           {/* Left: Veritas University Logo + SDP Logo */}
           <Link
             href="/"
             onClick={closeMenu}
             aria-label="SDP Portal Home"
-            className="inline-flex items-center focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#2563EB]"
+            className="inline-flex shrink-0 items-center focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#2563EB]"
           >
             <BrandLogos
               veritasLogoSrc={veritasLogoSrc}
@@ -139,13 +139,13 @@ export function Navbar({ veritasLogoSrc, logoSrc }: NavbarProps) {
           </Link>
 
           {/* Right: Borderless Instagram Icon + Uneven Hamburger Icon */}
-          <div className="flex items-center gap-4">
+          <div className="flex shrink-0 items-center gap-2 sm:gap-4">
             <a
               href={SOCIAL_LINKS.instagram.href}
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Follow SDP on Instagram"
-              className="inline-flex h-10 w-10 items-center justify-center text-white transition-colors duration-150 hover:text-[#60A5FA] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2563EB]"
+              className="inline-flex h-9 w-9 items-center justify-center text-white transition-colors duration-150 hover:text-[#60A5FA] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2563EB] sm:h-10 sm:w-10"
             >
               <InstagramIcon size={21} />
             </a>
@@ -160,7 +160,7 @@ export function Navbar({ veritasLogoSrc, logoSrc }: NavbarProps) {
               aria-expanded={menuOpen}
               aria-controls="sdp-fullscreen-menu"
               aria-label="Open navigation menu"
-              className="inline-flex h-10 w-10 items-center justify-center text-white transition-colors duration-150 cursor-pointer hover:text-[#60A5FA] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2563EB]"
+              className="inline-flex h-9 w-9 items-center justify-center text-white transition-colors duration-150 cursor-pointer hover:text-[#60A5FA] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2563EB] sm:h-10 sm:w-10"
             >
               <svg
                 aria-hidden="true"
@@ -184,7 +184,7 @@ export function Navbar({ veritasLogoSrc, logoSrc }: NavbarProps) {
           <div className="sdp-navigation-insets flex h-full min-h-0 flex-col overflow-hidden bg-[#0B1F33] text-white">
             {/* Overlay Top Bar */}
             <div className="shrink-0 border-b border-white/10">
-              <div className="mx-auto flex h-20 max-w-6xl items-center justify-between px-6 sm:h-[88px]">
+              <div className="sdp-header-row mx-auto flex max-w-6xl items-center justify-between px-4 sm:h-[88px] sm:px-6">
                 <Link
                   href="/"
                   onClick={closeMenu}
@@ -202,7 +202,7 @@ export function Navbar({ veritasLogoSrc, logoSrc }: NavbarProps) {
                   type="button"
                   onClick={closeMenu}
                   aria-label="Close navigation menu"
-                  className="inline-flex h-10 w-10 items-center justify-center text-white transition-colors duration-150 cursor-pointer hover:text-[#60A5FA] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                  className="inline-flex h-9 w-9 items-center justify-center text-white transition-colors duration-150 cursor-pointer hover:text-[#60A5FA] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white sm:h-10 sm:w-10"
                 >
                   <svg
                     aria-hidden="true"

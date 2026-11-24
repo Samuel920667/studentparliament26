@@ -39,7 +39,7 @@ export const SENATORS_2026_2027: readonly SenatorRecord[] = [
   },
   {
     id: "esther-odih",
-    name: "Esther Odih",
+    name: "Esther David Odih",
     department: "Political Science and Diplomacy",
     phone: "09158310171",
     whatsappNumber: "2349158310171",

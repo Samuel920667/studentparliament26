@@ -46,6 +46,10 @@
     -moz-osx-font-smoothing: grayscale;
   }
 
+  @media (max-width: 639px) {
+    html { background-color: var(--navy-deep); }
+  }
+
   body {
     background-color: var(--background);
     color: var(--foreground);
@@ -145,6 +149,10 @@
   }
 
   .sdp-navigation-dialog { overflow: hidden; background: var(--navy-deep); }
+  .sdp-header-row {
+    /* Include the status area and bottom border in the mobile 80px target. */
+    height: max(36px, calc(80px - env(safe-area-inset-top, 0px) - 1px));
+  }
   .sdp-navigation-insets {
     padding-top: env(safe-area-inset-top, 0px);
     padding-right: env(safe-area-inset-right, 0px);

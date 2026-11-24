@@ -32,6 +32,19 @@ for (const viewport of [
     await page.setViewportSize(viewport);
     await page.goto("/leadership");
     await page.evaluate(() => document.fonts.ready);
+    const header = page.locator("header");
+    expect((await header.boundingBox())!.height).toBe(viewport.width < 640 ? 80 : 89);
+    const alignedItems = await header.locator("img, a[aria-label='Follow SDP on Instagram'] svg, button svg").evaluateAll(nodes => nodes.map(node => {
+      const bounds = node.getBoundingClientRect();
+      return { center: bounds.y + bounds.height / 2, width: bounds.width };
+    }));
+    const expectedLogoWidth = viewport.width < 640 ? 32 : 64;
+    expect(alignedItems.slice(0, 2).map(item => item.width)).toEqual([expectedLogoWidth, expectedLogoWidth]);
+    for (const item of alignedItems) expect(Math.abs(item.center - alignedItems[0].center)).toBeLessThan(1);
+    if (viewport.width < 640) {
+      await expect(header).toHaveCSS("background-color", "rgb(11, 31, 51)");
+      await expect(header).toHaveCSS("backdrop-filter", "none");
+    }
     const trigger = page.getByRole("button", { name: "Open navigation menu" });
     if (testInfo.project.use.hasTouch) await trigger.tap();
     else await trigger.click();
@@ -138,13 +151,21 @@ for (const device of [
       await route.fulfill({ response, body: css });
     });
     await page.goto("/leadership");
+    const headerGutter = device.viewport.width < 640 ? 16 : 24;
     const headerBrand = page.locator("header").getByRole("link", { name: "SDP Portal Home" });
-    expect((await headerBrand.boundingBox())!.x).toBeGreaterThanOrEqual(device.insets.left + 24);
+    expect((await headerBrand.boundingBox())!.x).toBeGreaterThanOrEqual(device.insets.left + headerGutter);
+    if (device.viewport.width < 640) {
+      expect((await page.locator("header").boundingBox())!.height).toBe(Math.max(80, device.insets.top + 37));
+      expect((await headerBrand.boundingBox())!.y).toBeGreaterThanOrEqual(device.insets.top);
+      await expect(page.locator("html")).toHaveCSS("background-color", "rgb(11, 31, 51)");
+      await expect(page.locator("header")).toHaveCSS("background-color", "rgb(11, 31, 51)");
+    }
+    await page.screenshot({ path: testInfo.outputPath("header-safe-area.png") });
     await page.getByRole("button", { name: "Open navigation menu" }).click();
     const dialog = page.getByRole("dialog", { name: "Site navigation" });
     const brand = (await dialog.getByRole("link", { name: "SDP Portal Home" }).boundingBox())!;
     expect(brand.y).toBeGreaterThanOrEqual(device.insets.top);
-    expect(brand.x).toBeGreaterThanOrEqual(device.insets.left + 24);
+    expect(brand.x).toBeGreaterThanOrEqual(device.insets.left + headerGutter);
     const social = dialog.getByRole("link", { name: "Follow on Instagram" });
     await social.scrollIntoViewIfNeeded();
     const cta = dialog.getByRole("link", { name: "Draft a Petition" });
